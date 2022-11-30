@@ -3,6 +3,7 @@ class Person:
     pox_y = 0
     id = 0
     relations = []
+    movable = True
 
     def __init__(self, pos_x, pos_y, id, relations) -> None:
         self.pos_x = pos_x
@@ -36,5 +37,20 @@ def predict_swap_score_difference(person1, person2, class_array):
 
 class_array = []
 
-for i in range(30):
-    class_array.append(Person(0, 0, i, []))
+#init class_array
+id = 0
+for x in range(6):
+    for y in range(6):
+        if id < 30:
+            class_array.append(Person(x, y, id, []))
+            id += 1
+
+#algo
+swap_thresh = 1
+iter_amt = 10
+for i in range(iter_amt):
+    for person1 in class_array:
+        for person2 in class_array:
+            if person1 != person2:
+                if predict_swap_score_difference(person1, person2, class_array) > swap_thresh:
+                    swap(person1, person2, class_array)
