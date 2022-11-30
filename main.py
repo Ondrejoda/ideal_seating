@@ -1,3 +1,5 @@
+import random
+
 class Person:
     pox_x = 0
     pox_y = 0
@@ -20,6 +22,15 @@ class Person:
     def calc_relation(self, person2):
         return self.relations[person2.id] + person2.relations[self.id]
 
+    def match_pos(self, x, y):
+        return x == self.pos_x and y == self.pos_y
+
+def make_random_relations():
+    relations = []
+    for i in range(30):
+        relations.append(random.randint(1, 10))
+    return relations
+
 def swap(person1, person2, class_array):
     pos1 = class_array.index(person1)
     pos2 = class_array.index(person2)
@@ -39,6 +50,20 @@ def predict_swap_score_difference(person1, person2, class_array):
     predicted_score = calc_total_score(temp_class_array)
     return temp_class_array - class_array
 
+def show_class(class_array):
+    for y in range(6):
+        for x in range(6):
+            for person in class_array:
+                if person.match_pos(x, y):
+                    string = str(person.id)
+                    if len(string) == 1:
+                        string += " "
+                    if x % 2 == 0:
+                        print(string, end=" ")
+                    else:
+                        print(string, end="   ")
+        print("")
+
 #-------------------------------------------------------End of definitions-------------------------------------------------------#
 
 class_array = []
@@ -47,16 +72,17 @@ class_array = []
 id = 0
 for x in range(6):
     for y in range(6):
-        if id < 30:
-            class_array.append(Person(x, y, id, []))
-            id += 1
+        class_array.append(Person(x, y, id, make_random_relations()))
+        id += 1
+
+show_class(class_array)
 
 #algo
-swap_thresh = 1
-iter_amt = 10
-for i in range(iter_amt):
-    for person1 in class_array:
-        for person2 in class_array:
-            if person1 != person2:
-                if predict_swap_score_difference(person1, person2, class_array) > swap_thresh:
-                    swap(person1, person2, class_array)
+# swap_thresh = 1
+# iter_amt = 10
+# for i in range(iter_amt):
+#     for person1 in class_array:
+#         for person2 in class_array:
+#             if person1 != person2:
+#                 if predict_swap_score_difference(person1, person2, class_array) > swap_thresh:
+#                     swap(person1, person2, class_array)
