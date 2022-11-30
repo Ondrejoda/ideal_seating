@@ -12,7 +12,13 @@ class Person:
         self.relations = relations
 
     def calc_score(self, class_array):
-        pass
+        total_score = 0
+        for person2 in class_array:
+            total_score += self.calc_relation(person2)
+        return total_score
+
+    def calc_relation(self, person2):
+        return self.relations[person2.id] + person2.relations[self.id]
 
 def swap(person1, person2, class_array):
     pos1 = class_array.index(person1)
