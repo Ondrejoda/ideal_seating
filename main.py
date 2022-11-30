@@ -5,7 +5,7 @@ class Person:
     relations = []
     movable = True
 
-    def __init__(self, pos_x, pos_y, id, relations) -> None:
+    def __init__(self, pos_x, pos_y, id, relations):
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.id = id
