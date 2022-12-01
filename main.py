@@ -18,7 +18,8 @@ class Person:
 
     def calc_relation(self, person2, dist_weight=1):
         dist = math.hypot(person2.pos_x - self.pos_x, person2.pos_y - self.pos_y)
-        score = (self.relations[person2.id] + person2.relations[self.id]) * ((8.5 - (dist / 8.5)) * dist_weight)
+        dist_mod = ((8.5 - dist) / 8.5 * dist_weight)
+        score = (self.relations[person2.id] * dist_mod + person2.relations[self.id] * dist_mod)
         return score
 
     def match_pos(self, x, y):
@@ -27,7 +28,7 @@ class Person:
 def make_random_relations():
     relations = []
     for i in range(50):
-        relations.append(random.randint(1, 10))
+        relations.append(random.randint(-4, 5))
     return relations
 
 def swap(person1, person2, class_array):
@@ -77,21 +78,24 @@ class_array = []
 id = 0
 for x in range(6):
     for y in range(6):
-        class_array.append(Person(x, y, id, "id", make_random_relations()))
+        rels = make_random_relations()
+        class_array.append(Person(x, y, id, "id", rels))
+        print(id, rels)
         id += 1
 
 show_class(class_array)
 
 #algo
-print("algo")
-swap_thresh = 10
+print("total score:", calc_total_score(class_array))
+print("#######################################")
+swap_thresh = 0.5
 iter_amt = 10
 for i in range(iter_amt):
     for person1 in class_array:
         for person2 in class_array:
             if predict_swap_score_difference(person1, person2, class_array) > swap_thresh:
                 class_array = swap(person1, person2, class_array)
-                # print(person1.id, person2.id, "swapped, iter:", i + 1)
+                print(person1.id, person2.id, "swapped, iter:", i + 1, "score_diff:", predict_swap_score_difference(person1, person2, class_array))
     show_class(class_array)
     print("total score:", calc_total_score(class_array))
     print("#######################################")
