@@ -1,16 +1,13 @@
+from __future__ import print_function
+
 import random, math
 
 class Person:
-    pox_x = 0
-    pox_y = 0
-    id = 0
-    relations = []
-    movable = True
-
-    def __init__(self, pos_x, pos_y, id, relations):
+    def __init__(self, pos_x, pos_y, id, name, relations):
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.id = id
+        self.name = name
         self.relations = relations
 
     def calc_score(self, class_array):
@@ -35,6 +32,12 @@ def make_random_relations():
 
 def swap(person1, person2, class_array):
     rtn = class_array.copy()
+    tmp_x = person1.pos_x
+    tmp_y = person1.pos_y
+    person1.pos_x = person2.pos_x
+    person1.pos_y = person2.pos_y
+    person2.pos_x = tmp_x
+    person2.pos_y = tmp_y
     pos1 = rtn.index(person1)
     pos2 = rtn.index(person2)
     rtn[pos1], rtn[pos2] = rtn[pos2], rtn[pos1]
@@ -44,7 +47,7 @@ def calc_total_score(class_array):
     total_score = 0
     for person in class_array:
         total_score += person.calc_score(class_array)
-    return total_score
+    return total_score / len(class_array)
 
 def predict_swap_score_difference(person1, person2, class_array):
     inital_score = calc_total_score(class_array)
@@ -74,20 +77,21 @@ class_array = []
 id = 0
 for x in range(6):
     for y in range(6):
-        class_array.append(Person(x, y, id, make_random_relations()))
+        class_array.append(Person(x, y, id, "id", make_random_relations()))
         id += 1
 
 show_class(class_array)
 
 #algo
 print("algo")
-swap_thresh = 0
+swap_thresh = 10
 iter_amt = 10
 for i in range(iter_amt):
     for person1 in class_array:
         for person2 in class_array:
             if predict_swap_score_difference(person1, person2, class_array) > swap_thresh:
-                swap(person1, person2, class_array)
-                print(person1.id, person2.id, "swapped, iter:", i + 1)
-
-show_class(class_array)
+                class_array = swap(person1, person2, class_array)
+                # print(person1.id, person2.id, "swapped, iter:", i + 1)
+    show_class(class_array)
+    print("total score:", calc_total_score(class_array))
+    print("#######################################")
